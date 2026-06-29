@@ -1,0 +1,29 @@
+const express = require("express");
+const app = express();
+app.use(express.json());
+
+app.post("/token", async (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  const { code } = req.body;
+  const response = await fetch("https://www.strava.com/oauth/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      client_id: "26170",
+      client_secret: "439a6d9c1fbcb865344b0804f123eebbfe2291ec",
+      code,
+      grant_type: "authorization_code",
+    }),
+  });
+  const data = await response.json();
+  res.json(data);
+});
+
+app.options("/token", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.send();
+});
+
+app.listen(process.env.PORT || 3000);
